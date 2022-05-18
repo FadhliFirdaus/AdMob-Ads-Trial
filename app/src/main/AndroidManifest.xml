@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.admobtest">
-
+    <!-- hardware acc for video ads, because if not then probs arise like pixelated ads, invinsible elements, exceptions, wrongly rendered px.
+            enabled globally by default if target API >= 14
+            so this is for backwards compatibility for API below 13
+            -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,13 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
 
+        android:hardwareAccelerated="true"
         android:theme="@style/Theme.AdmobTest">
         <meta-data
-            android:name="com.google.android.gms.ads.ca-app-pub-2588678730557792~5947421471"
-            android:value="ca-app-pub-2588678730557792/9695094794"/>
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2588678730557792~5947421471"/>
 
+        <!-- activiity level hardware acc disable-->
         <activity
             android:name=".MainActivity"
+            android:hardwareAccelerated="false"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
