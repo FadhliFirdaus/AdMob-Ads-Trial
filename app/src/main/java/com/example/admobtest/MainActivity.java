@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onAdOpened();
             }
         });
+        //
 
         // hardware acc for video ads programmatically
         getWindow().setFlags(
