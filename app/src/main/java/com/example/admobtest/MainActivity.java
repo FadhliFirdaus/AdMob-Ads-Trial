@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
+        //
         //disable HA for specific views
         bannerAd.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
