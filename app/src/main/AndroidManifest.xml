@@ -8,7 +8,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+
         android:theme="@style/Theme.AdmobTest">
+        <meta-data
+            android:name="com.google.android.gms.ads.ca-app-pub-2588678730557792~5947421471"
+            android:value="ca-app-pub-2588678730557792/9695094794"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
