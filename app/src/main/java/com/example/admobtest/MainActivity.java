@@ -18,15 +18,19 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.AdapterStatus;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
 
     Button interstitialButton;
     private InterstitialAd mInterstitialAd;
+    public AdView bannerAd;
     public static String interstitialTestId =
             "ca-app-pub-3940256099942544/1033173712";
     @Override
@@ -34,6 +38,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MobileAds.initialize(this, initializationStatus -> {
+            //check each adapter init status before making an ad
+            //
+            /*
+            Initialize your ad object with an Activity instance
+In the constructor for a new ad object (for example, AdView), you must pass in an object of type Context. This Context is passed on to other ad networks when using mediation. Some ad networks require a more restrictive Context that is of type Activity and may not be able to serve ads without an Activity instance. Therefore, we recommend passing in an Activity instance when initializing ad objects to ensure a consistent experience with your mediated ad networks.
+
+
+             */
+            Map<String, AdapterStatus> statusMap = initializationStatus.getAdapterStatusMap();
+            for(String adapter : statusMap.keySet()){
+                AdapterStatus status = statusMap.get(adapter);
+                Log.i("Mobile ads SDK", String.format("Adapter : %s, Desc : %s, Latency : %d", adapter, status.getDescription(), status.getDescription()));
+            }
+
 
         });
         bannerAdFunction();
@@ -100,7 +118,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bannerAdFunction() {
-        AdView bannerAd = new AdView(this);
+        /*
+        Banner ads mediation
+Make sure to disable refresh in all third-party ad networks UI for banner ad units used in AdMob mediation. This will prevent a double refresh since AdMob also triggers a refresh based on your banner ad unit's refresh rate.
+
+
+         */
+        bannerAd = new AdView(this);
         bannerAd.setAdSize(AdSize.BANNER);
         bannerAd.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
         bannerAd = findViewById(R.id.bannerAd);
@@ -131,9 +155,11 @@ public class MainActivity extends AppCompatActivity {
                 super.onAdImpression();
             }
 
+
             @Override
             public void onAdLoaded() {
                 super.onAdLoaded();
+                Log.i("Banner SDK used : ", "" + bannerAd.getResponseInfo().getMediationAdapterClassName());
                 t("ad finished loading");
             }
 
