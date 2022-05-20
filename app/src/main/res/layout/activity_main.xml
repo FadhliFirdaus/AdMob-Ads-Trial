@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center"
     tools:context=".MainActivity">
 
     <TextView
@@ -22,6 +24,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/interstitialButton"
         android:text="test interstitial ad"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nativeButton"
+        android:text="test Native ad"/>
+
+
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"

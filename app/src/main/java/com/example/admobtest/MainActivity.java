@@ -3,6 +3,7 @@ package com.example.admobtest;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,11 +29,12 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button interstitialButton;
+    Button interstitialButton, nativeButton;
     private InterstitialAd mInterstitialAd;
     public AdView bannerAd;
     public static String interstitialTestId =
             "ca-app-pub-3940256099942544/1033173712";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,7 @@ In the constructor for a new ad object (for example, AdView), you must pass in a
             Map<String, AdapterStatus> statusMap = initializationStatus.getAdapterStatusMap();
             for(String adapter : statusMap.keySet()){
                 AdapterStatus status = statusMap.get(adapter);
-                Log.i("Mobile ads SDK", String.format("Adapter : %s, Desc : %s, Latency : %d", adapter, status.getDescription(), status.getDescription()));
+                Log.i("Mobile ads SDK", String.format("Adapter : %s, Desc : %s, Latency : %d", adapter, status.getDescription(), status.getLatency()));
             }
 
 
@@ -57,11 +59,19 @@ In the constructor for a new ad object (for example, AdView), you must pass in a
         bannerAdFunction();
         interstitialLoadAdFunction();
         setButtonOnClick();
+        nativeFunction();
+    }
+
+    private void nativeFunction() {
+        nativeButton = findViewById(R.id.nativeButton);
+        nativeButton.setOnClickListener(view -> {
+        Intent i = new Intent(MainActivity.this, NativeAdActivity.class);
+        startActivity(i);
+        });
     }
 
     private void setButtonOnClick() {
         interstitialButton = findViewById(R.id.interstitialButton);
-
         interstitialButton.setOnClickListener(view -> {
             if(mInterstitialAd != null){
                 mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
@@ -82,7 +92,13 @@ In the constructor for a new ad object (for example, AdView), you must pass in a
                         // Called when fullscreen content is shown.
                         // Make sure to set your reference to null so you don't
                         // show it a second time.
+                        /*
+                        /*
+                         It's important to make sure that when your app displays an interstitial ad, it also suspends its use of some resources to allow the ad to take advantage of them. For example, when you make the call to display an interstitial ad, be sure to pause any audio output being produced by your app
+
+                         */
                         mInterstitialAd = null;
+
                         Log.d("TAG", "The ad was shown.");
                     }
                 });
@@ -95,6 +111,9 @@ In the constructor for a new ad object (for example, AdView), you must pass in a
 
     private void interstitialLoadAdFunction() {
         AdRequest adReq = new AdRequest.Builder().build();
+        /*
+        it's also important to make sure the user doesn't have to wait for them to load. Loading the ad in advance by calling load() before you intend to call show() can ensure that your app has a fully loaded interstitial ad at the ready when the time comes to display one
+        */
         InterstitialAd.load(this, interstitialTestId,
                 adReq, new InterstitialAdLoadCallback() {
                     @Override
@@ -109,6 +128,9 @@ In the constructor for a new ad object (for example, AdView), you must pass in a
 
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        /*
+                         It's important to make sure that when your app displays an interstitial ad, it also suspends its use of some resources to allow the ad to take advantage of them. For example, when you make the call to display an interstitial ad, be sure to pause any audio output being produced by your app
+                         */
                         //mInterstitial is always null until this function comes then instantiate it
                         mInterstitialAd = interstitialAd;
                         super.onAdLoaded(interstitialAd);

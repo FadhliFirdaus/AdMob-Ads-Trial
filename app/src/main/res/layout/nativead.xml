@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- the root for a native ad must be a NativeAdView element, it is a ViewGroup element
+
+only one nativeadview for each native ad-->
+
+<com.google.android.gms.ads.nativead.NativeAdView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/nativeAdView"
+    android:layout_height="match_parent">
+
+    <!--all elements that are needed to show the native ad must be the child elements here in nativeadview-->
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:id="@+id/nativeAdPlaceholder"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+
+
+        <com.google.android.gms.ads.nativead.MediaView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mediaView"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/adBody"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/adPrice"/>
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/adStore"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/adCallback"/>
+
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</com.google.android.gms.ads.nativead.NativeAdView>
