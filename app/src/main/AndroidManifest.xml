@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.admobtest">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- hardware acc for video ads, because if not then probs arise like pixelated ads, invinsible elements, exceptions, wrongly rendered px.
             enabled globally by default if target API >= 14
             so this is for backwards compatibility for API below 13

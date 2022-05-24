@@ -3,8 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.11851851851851852" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
         <entry key="app/src/main/res/layout/nativead.xml" value="0.3572916666666667" />
+        <entry key="app/src/main/res/layout/rewarded_ads.xml" value="0.34933605720122574" />
       </map>
     </option>
   </component>
