@@ -67,9 +67,6 @@ In the constructor for a new ad object (for example, AdView), you must pass in a
                 Log.i("Mobile ads SDK", String.format("Adapter : %s, Desc : %s, Latency : %d", adapter, status.getDescription(), status.getLatency()));
             }
             MobileAds.setRequestConfiguration(configuration);
-
-
-
         });
         bannerAdFunction();
         interstitialLoadAdFunction();
