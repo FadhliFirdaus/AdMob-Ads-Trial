@@ -12,6 +12,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.ads.consent.ConsentInfoUpdateListener;
+import com.google.ads.consent.ConsentInformation;
+import com.google.ads.consent.ConsentStatus;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -23,13 +27,12 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.AdapterStatus;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.ump.ConsentRequestParameters;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,6 +64,16 @@ public class MainActivity extends AppCompatActivity {
 In the constructor for a new ad object (for example, AdView), you must pass in an object of type Context. This Context is passed on to other ad networks when using mediation. Some ad networks require a more restrictive Context that is of type Activity and may not be able to serve ads without an Activity instance. Therefore, we recommend passing in an Activity instance when initializing ad objects to ensure a consistent experience with your mediated ad networks.
              */
 
+            /*
+
+It is a best practice to load an ad inside the callback of the OnInitializationCompleteListener. Even if a mediation network is not ready, the Google Mobile Ads SDK will still ask that network for an ad. So if a mediation network finishes initializing after the timeout, it can still service future ad requests in that session.
+
+You can continue to poll the initialization status of all adapters throughout your app session by calling MobileAds.getInitializationStatus().
+
+AdapterStatus.getDescription() describes why an adapter is not ready to service ad requests.
+*/
+
+
             Map<String, AdapterStatus> statusMap = initializationStatus.getAdapterStatusMap();
             for(String adapter : statusMap.keySet()){
                 AdapterStatus status = statusMap.get(adapter);
@@ -73,6 +86,99 @@ In the constructor for a new ad object (for example, AdView), you must pass in a
         setButtonOnClick();
         nativeFunction();
         rewardedFunction();
+        getUserConsent();
+    }
+
+    private void getUserConsent() {
+        ConsentInformation consentInfo = ConsentInformation.getInstance(this);
+        //use your publisher id
+        String[] publisherIds = {"pub-2588678730557792"};
+        /*
+                The call to requestConsentInfoUpdate() requires two arguments:
+
+        An array of valid, fully activated publisher IDs that your app requests ads from. Find your publisher ID.
+
+        An instance of ConsentInfoUpdateListener.
+         */
+        consentInfo.requestConsentInfoUpdate(publisherIds, new ConsentInfoUpdateListener() {
+            @Override
+            public void onConsentInfoUpdated(ConsentStatus consentStatus) {
+                //user's consent status update successfully
+                /*
+The returned ConsentStatus may have the values listed below:
+
+ConsentStatus.PERSONALIZED
+The user has granted consent for personalized ads.
+
+ConsentStatus.NON_PERSONALIZED
+The user has granted consent for non-personalized ads.
+
+ConsentStatus.UNKNOWN
+The user has neither granted nor declined consent for personalized or non-personalized ads.
+                 */
+
+            }
+
+            @Override
+            public void onFailedToUpdateConsentInfo(String reason) {
+                //user's consent failed to update
+                t(reason);
+            }
+        });
+        boolean locationInfoKnown = consentInfo.isRequestLocationInEeaOrUnknown();
+/*
+
+If the isRequestLocationInEeaOrUnknown() method returns true:
+
+If the returned ConsentStatus is PERSONALIZED or NON_PERSONALIZED, the user has already provided consent. You can now forward consent to the Google Mobile Ads SDK.
+
+If the returned ConsentStatus is UNKNOWN, see the Collect consent section below, which describes the use of utility methods to collect consent.
+
+The default behavior of the Google Mobile Ads SDK is to serve personalized ads. If a user has consented to receive only non-personalized ads, you can configure an AdRequest object to specify that only non-personalized ads should be requested. The following code causes non-personalized ads to be requested regardless of whether or not the user is in the EEA:
+
+If non-personalized ads are requested, the ad request URL currently includes &npa=1. However, note that this is an internal implementation detail of the Google Mobile Ads SDK and is subject to change.
+
+Google's Consent SDK. provides two ways to collect consent from a user:
+
+
+Present a Google-rendered consent form to the user.
+
+Request the list of ad technology providers and collect consent yourself using the Publisher-managed consent collection option.
+
+ The Google-rendered consent form is a full-screen configurable form that displays over your app content. You can configure the form to present the user with combinations of the following options:
+
+Consent to view personalized ads
+Consent to view non-personalized ads
+Use a paid version of the app instead of viewing ads*/
+
+        Bundle extras = new Bundle();
+        extras.putString("npa", "1");
+        //request
+        AdRequest req = new AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter.class, extras).build();
+
+
+        /*
+        Once consent information is successfully updated, you can also check ConsentInformation.getInstance(context).isRequestLocationInEeaOrUnknown() to see if the user is located in the European Economic Area or the request location is unknown.
+
+        You should review the consent text carefully: what appears by default is a message that might be appropriate if you use Google to monetize your app; but we cannot provide legal advice on the consent text that is appropriate for you. To update consent text of the Google-rendered consent form, modify the consentform.html file included in the Consent SDK as required.
+
+        The methods above prepare the Google-rendered consent form with the following options:
+
+withListener()
+Registers a listener for the ConsentForm. Each of the overridable methods in ConsentFormListener corresponds to an event in the lifecycle of the consent form.
+Overridable methods
+onConsentFormLoaded	The consent form successfully loaded.
+onConsentFormError	The consent form failed to load. The errorDescription parameter provides a description of the error.
+onConsentFormOpened	The consent form was opened.
+onConsentFormClosed	The consent form was closed. The parameters of the method provides the following information:
+consentStatus is a ConsentStatus value that describes the updated consent status of the user.
+userPrefersAdFree has a value of true when the user chose to use a paid version of the app instead of viewing ads.
+         */
+
+
+        /*
+
+         */
     }
 
     private void rewardedFunction() {
